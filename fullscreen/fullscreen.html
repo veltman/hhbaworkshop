@@ -1,0 +1,88 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+    <title>Leaflet: Fullscreen</title>    
+    <link rel="stylesheet" href="leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="leaflet.ie.css" />
+    <![endif]-->        
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 12px;
+        }
+
+        #map {
+            width: 100%;
+            height: auto;
+            position:absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;    
+        }            
+
+        div.control {
+            font-size: 12px;
+            padding: 8px;
+            background: white;
+            background: rgba(255,255,255,1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            -moz-box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            -webkit-box-shadow: 0 0 15px rgba(0,0,0,0.2);    
+            border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            color: #000;
+            border: 1px solid #888;
+        }        
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script type="text/javascript" src="jquery.1.9.1.min.js"></script>
+    <script type="text/javascript" src="leaflet.js"></script>
+    <script type="text/javascript">
+
+        var map,info;
+
+        $(document).ready(function() {  
+
+            //Initialize the map
+            map = L.map('map',{minZoom: 13,maxZoom: 18});
+
+            map.fitBounds([[37.77532815168286,-122.42511749267578],[37.81039424557001,-122.39198684692384]]);
+
+            //terrain, terrain-lines, toner-lite, toner, watercolor
+            L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png', {
+                attribution: 'Map tiles &copy; <a href="http://stamen.com">Stamen Design</a> (<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>). Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors (<a href="http://opendatacommons.org/licenses/odbl/">ODbL</a>).',
+                subdomains: 'abcd'
+            }).addTo(map);
+
+            //Info box in upper-right corner
+            info = L.control();
+            info.options.position = "topright";            
+
+            info.clear = function () {
+                this._div.innerHTML = '';
+            };
+
+            info.onAdd = function (map) {                
+                this._div = L.DomUtil.create("div", "control");
+                L.DomEvent.disableClickPropagation(this._div);
+                this.clear();
+                return this._div;
+            };
+
+            info.addTo(map);
+
+        });    
+
+    </script>
+</body>
+</html>
