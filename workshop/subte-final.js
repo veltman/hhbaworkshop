@@ -101,7 +101,8 @@ var subte = {
             "from": "Boedo",
             "from_id": 8,
             "line": "E",
-            "to": "Av. La Plata"
+            "to": "Av. La Plata",
+            "to_id": 6
         },
         {
             "date": "1966-04-24",
@@ -114,12 +115,15 @@ var subte = {
         {
             "date": "1973-06-23",
             "from": "Av. La Plata",
+            "from_id": 6,
             "line": "E",
-            "to": "José María Moreno"
+            "to": "José María Moreno",
+            "to_id": 39
         },
         {
             "date": "1985-10-07",
             "from": "José María Moreno",
+            "from_id": 39,
             "line": "E",
             "to": "Emilio Mitre",
             "to_id": 26
@@ -161,11 +165,13 @@ var subte = {
             "from": "Ministro Carranza",
             "from_id": 51,
             "line": "D",
-            "to": "José Hernández"
+            "to": "José Hernández",
+            "to_id": 38
         },
         {
             "date": "1999-06-21",
             "from": "José Hernández",
+            "from_id": 38,
             "line": "D",
             "to": "Juramento",
             "to_id": 42

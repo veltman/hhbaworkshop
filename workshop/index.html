@@ -8,12 +8,39 @@
 		<link rel="stylesheet" href="leaflet-0.6.4/leaflet.ie.css" />
 	<![endif]-->
 	<script src="leaflet-0.6.4/leaflet.js"></script>
+	<script src="subte-final.js"></script>
+	<script src="jquery.1.9.1.min.js"></script>
 </head>
 <body>
 	<div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%"></div>
 	<script>
 		var map = L.map('map').setView([-34.6094, -58.4098], 14);
 		L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png').addTo(map);
+
+
+    $.each(subte['stations'], function(station_id, station) {
+      var station_marker = new L.CircleMarker(station.latlng, {
+        'radius': 10,
+        'fillColor': "#ffffff",
+        'fillOpacity': 1.0,
+        'color': '#f00000'
+      });
+      station_marker.addTo(map).bindPopup(station.name);
+    });
+
+    $.each(subte['lines'], function(line_id, line) {
+      var from_station = subte['stations'][line.from_id];
+      var to_station = subte['stations'][line.to_id];
+
+      console.log(line.from_id + ", " + from_station);
+      console.log(line.to_id + ", " + to_station);
+
+      L.polyline([
+        from_station.latlng,
+        to_station.latlng
+      ]).addTo(map);
+    });
+    
 	</script>
 </body>
 </html>
