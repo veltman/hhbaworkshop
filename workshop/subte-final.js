@@ -29,13 +29,21 @@ var subte = {
             "from": "Federico Lacroze",
             "from_id": 29,
             "line": "B",
+            "to": "Medrano",
+            "to_id": 50
+        },
+       {
+            "date": "1930-10-17",
+            "from": "Medrano",
+            "from_id": 50,
+            "line": "B",
             "to": "Callao",
-            "to_id": 12
+            "to_id": 11
         },
         {
             "date": "1931-07-22",
             "from": "Callao",
-            "from_id": 12,
+            "from_id": 11,
             "line": "B",
             "to": "Carlos Pellegrini",
             "to_id": 15
