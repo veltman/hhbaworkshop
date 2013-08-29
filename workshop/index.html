@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet!</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="leaflet-0.6.4/leaflet.css" />
+	<!--[if lte IE 8]>
+		<link rel="stylesheet" href="leaflet-0.6.4/leaflet.ie.css" />
+	<![endif]-->
+	<script src="leaflet-0.6.4/leaflet.js"></script>
+</head>
+<body>
+	<div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%"></div>
+	<script>
+		var map = L.map('map').setView([-34.6094, -58.4098], 14);
+		L.tileLayer('tiles/{z}/{x}/{y}.png').addTo(map);
+	</script>
+</body>
+</html>
