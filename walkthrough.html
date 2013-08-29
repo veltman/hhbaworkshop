@@ -1,0 +1,269 @@
+<h1>Making maps with Leaflet: A starter guide</h1>
+
+<p>A work-in-progress.</p>
+
+<p>This is a <em>very</em> quick overview of how to use Leaflet.js to perform
+some basic mapping tasks:</p>
+
+<ul>
+<li>Making a map in a webpage</li>
+<li>Adding points to the map</li>
+<li>Creating a "popup" information window when clicking on a point.</li>
+<li>Adding lines to the map.</li>
+<li>Adding shapes to the map.</li>
+</ul>
+
+<h2>1: A super basic HTML page.</h2>
+
+<p>Here's the plain ol' HTML page we'll use to create a map:</p>
+
+<p><code>html
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Leaflet!&lt;/title&gt;
+    &lt;meta charset="utf-8" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="map" style="position: absolute; top: 0; bottom: 0; left: 0;
+    right: 0; width: 100%; height: 100%"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code>
+The only complicated part is the <code>style</code> element, which just makes the map tag cover the entire surface of the page.</p>
+
+<h2>2: Loading a map</h2>
+
+<p>Now, we'll throw the Leaflet CSS and Javascript into the header so it loads...</p>
+
+<p><code>html
+    &lt;link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" /&gt;
+    &lt;!--[if lte IE 8]&gt;
+        &lt;link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" /&gt;
+    &lt;![endif]--&gt;
+    &lt;script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"&gt;&lt;/script&gt;
+</code></p>
+
+<p>...and some simple script code to turn our full <code>&lt;div id="map"&gt;</code> tag into a real, working map.</p>
+
+<p><code>html
+    &lt;script&gt;
+        var map = L.map('map').setView([-34.6094, -58.4098], 14);
+        L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png').addTo(map);
+    &lt;/script&gt;
+</code></p>
+
+<p>The <code>L.map('map')</code> part tells Leaflet to turn the <code>map</code> div into an interactive Leaflet map. Then, we center it on the coordinate -34.6094, -58.4098 (which is a few blocks south of where we are) and use "zoom level 14".</p>
+
+<p>To actually give it a usable road map, we simply use <a href="https://wiki.openstreetmap.org/wiki/MapQuest">OpenStreetMap tiles that MapQuest hosts</a>, set it up as a <code>tileLayer</code>, and add it to the map we just created.</p>
+
+<hr />
+
+<p>Here's what the page code should look like:</p>
+
+<p><code>html
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Leaflet!&lt;/title&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" /&gt;
+    &lt;!--[if lte IE 8]&gt;
+        &lt;link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" /&gt;
+    &lt;![endif]--&gt;
+    &lt;script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="map" style="position: absolute; top: 0; bottom: 0; left: 0;
+    right: 0; width: 100%; height: 100%"&gt;&lt;/div&gt;
+    &lt;script&gt;
+        var map = L.map('map').setView([-34.6094, -58.4098], 14);
+        L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png').addTo(map);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></p>
+
+<p><a href="http://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop_1.html">And here’s what that HTML page should look like if you open it up in your browser.</a> <br />
+<img src="https://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop1.jpg" alt="map" title="" /></p>
+
+<hr />
+
+<p>If we want to be a good citizen of the world, we should give credit to the OpenStreetMap project and to MapQuest for the tiles. MapQuest's documetation also tells us that they have multiple domains that serve the same tiles (so that a CDN — content-delivery network — can serve the tiles to users more quickly). So let's change the tileLayer line to this:</p>
+
+<p><code>html
+        L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+            attribution: 'Map data &amp;copy;&lt;a href="http://www.openstreetmap.org/copyright" target="_blank"&gt;OpenStreetMap&lt;/a&gt;, Map imagery &amp;copy;&lt;a href="http://open.mapquest.com/" target="_blank"&gt;MapQuest&lt;/a&gt;',
+            subdomains: '1234'
+        }).addTo(map);
+</code></p>
+
+<p>Now our basic map page looks like this:</p>
+
+<p><code>html
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Leaflet!&lt;/title&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" /&gt;
+    &lt;!--[if lte IE 8]&gt;
+        &lt;link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" /&gt;
+    &lt;![endif]--&gt;
+    &lt;script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id="map" style="position: absolute; top: 0; bottom: 0; left: 0;
+    right: 0; width: 100%; height: 100%"&gt;&lt;/div&gt;
+    &lt;script&gt;
+        var map = L.map('map').setView([-34.6094, -58.4098], 14);
+        L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+            attribution: 'Map data &amp;copy;&lt;a href="http://www.openstreetmap.org/copyright" target="_blank"&gt;OpenStreetMap&lt;/a&gt;, Map imagery &amp;copy;&lt;a href="http://open.mapquest.com/" target="_blank"&gt;MapQuest&lt;/a&gt;',
+            subdomains: '1234'
+        }).addTo(map);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></p>
+
+<h2>3: Markers to show location</h2>
+
+<p>Now let's learn how to add markers — a visual representation of a latitude/longitude location — to our map.</p>
+
+<p>Similar to how we added <code>tileLayer</code> object to our map, we can also add a <code>marker</code>:</p>
+
+<p><code>javascript
+    L.marker([-34.60622, -58.41047]).addTo(map)
+            .bindPopup("Ciudad Cultural Konex!");
+</code></p>
+
+<p>Add this below where we added our tileLayer, like this:</p>
+
+<p>```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaflet!</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%"></div>
+    <script>
+        var map = L.map('map').setView([-34.6094, -58.4098], 14);
+    L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy;<a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, Map imagery &copy;<a href="http://open.mapquest.com/" target="_blank">MapQuest</a>',
+            subdomains: '1234'
+        }).addTo(map);</p>
+
+<pre><code>    L.marker([-34.60622, -58.41047]).addTo(map)
+        .bindPopup("Ciudad Cultural Konex!");
+&lt;/script&gt;
+</code></pre>
+
+<p></body>
+</html>
+```</p>
+
+<p>Now you should have <a href="http://s3.amazonaws.com/media.miketigas.com/files/20130828/workshop_2.html">a map with a point, like this</a>. You can even click on the point and see the "Ciudad Cultural Konex!" popup.</p>
+
+<p>It should look like this: <br />
+<img src="https://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop2.jpg" alt="map" title="" />
+<img src="https://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop3.jpg" alt="map" title="" /></p>
+
+<hr />
+
+<p>You can add as many points as you want. For example, replacing the above <code>L.marker</code> block with the following...</p>
+
+<p><code>javascript
+        L.marker([-34.5974, -58.3983]).addTo(map);
+        L.marker([-34.6102, -58.39]).addTo(map);
+        L.marker([-34.602, -58.42]).addTo(map);
+        L.marker([-34.60622, -58.41047]).addTo(map);
+</code></p>
+
+<p>...will get you a map that looks like <br />
+<img src="https://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop4.jpg" alt="map" title="" /></p>
+
+<h2>4: Drawing lines between points</h2>
+
+<p>Now we know how to start a map and put points on a map. Let's learn how to put together a map with lines.</p>
+
+<p>We'll take the previous full example and replace all the <code>L.marker</code> lines with this:</p>
+
+<p>```javascript
+        L.marker([-34.60622, -58.41047]).addTo(map)
+            .bindPopup("Ciudad Cultural Konex!");</p>
+
+<pre><code>    L.marker([-34.6102, -58.39]).addTo(map);
+
+    L.polyline([
+        [-34.60622, -58.41047],
+        [-34.6102, -58.39]
+    ], {color: 'red'}).addTo(map);
+</code></pre>
+
+<p>```</p>
+
+<p>Instead of a simple <code>latitude, longitude</code> coordinate, a polyline takes several coordinates as its input, and then draws lines between them.</p>
+
+<p>Here's the full HTML of the page:</p>
+
+<p>```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaflet!</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" />
+    <![endif]-->
+    <script src="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%"></div>
+    <script>
+        var map = L.map('map').setView([-34.6094, -58.4098], 14);
+        L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy;<a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>, Map imagery &copy;<a href="http://open.mapquest.com/" target="_blank">MapQuest</a>',
+            subdomains: '1234'
+        }).addTo(map);</p>
+
+<pre><code>    L.marker([-34.60622, -58.41047]).addTo(map)
+        .bindPopup("Ciudad Cultural Konex!");
+
+    L.marker([-34.6102, -58.39]).addTo(map);
+
+    L.polyline([
+        [-34.60622, -58.41047],
+        [-34.6102, -58.39]
+    ], {color: 'red'}).addTo(map);
+&lt;/script&gt;
+</code></pre>
+
+<p></body>
+</html>
+```</p>
+
+<p><img src="https://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop5.jpg" alt="map" title="" /></p>
+
+<h2>5: Drawing shapes</h2>
+
+<p>Similarly, <code>L.polygon</code> objects work like <code>L.polyline</code> objects, but they need a minimum of three points (so a shape is completed).</p>
+
+<p>Replace the markers and polyline portions of the code with this:
+<code>javascript
+        L.polygon([
+            [-34.60622, -58.41047],
+            [-34.6102, -58.39],
+            [-34.5974, -58.3983]
+        ], {color: 'green'}).addTo(map);
+</code></p>
+
+<p>You'll end up with something like this:
+<img src="https://d2p12wh0p3fo1n.cloudfront.net/files/20130828/workshop6.jpg" alt="map" title="" /></p>

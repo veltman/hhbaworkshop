@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet!</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="leaflet-0.6.4/leaflet.css" />
+	<!--[if lte IE 8]>
+		<link rel="stylesheet" href="leaflet-0.6.4/leaflet.ie.css" />
+	<![endif]-->
+	<script src="leaflet-0.6.4/leaflet.js"></script>
+	<script src="subte-final.js"></script>
+	<script src="jquery.1.9.1.min.js"></script>
+  <style type="text/css">
+        div.control {
+            font-size: 14px;
+            padding: 8px;
+            background: white;
+            background: rgba(255,255,255,1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            -moz-box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            -webkit-box-shadow: 0 0 15px rgba(0,0,0,0.2);    
+            border-radius: 4px;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            color: #000;
+            border: 1px solid #888;
+        }        
+    </style>
+</head>
+<body>
+	<div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%"></div>
+	<script>
+		var map = L.map('map').setView([-34.6094, -58.4098], 14);
+		L.tileLayer('http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png').addTo(map);
+
+    info = L.control();
+    info.options.position = "topright";
+    info.clear = function () {
+        this._div.innerHTML = '';
+    };
+
+    info.text = function(t, color) {
+      this._div.innerHTML += "<div style='color:"+color+"'>"+t+"</div>";
+    };
+
+    info.onAdd = function (map) {
+        this._div = L.DomUtil.create("div", "control");
+        L.DomEvent.disableClickPropagation(this._div);
+        this.clear();
+        return this._div;
+    };
+
+    info.addTo(map);
+
+
+    var line_group = L.layerGroup([]).addTo(map);
+    var station_group = L.layerGroup([]).addTo(map);
+
+    $.each(subte['lines'], function(line_id, line) {
+      var from_station = subte['stations'][line.from_id];
+      var to_station = subte['stations'][line.to_id];
+      var color = subte['colors'][line.line];
+
+      setTimeout(function() {
+        line_group.addLayer(L.polyline([
+          from_station.latlng,
+          to_station.latlng
+        ], {
+          'color': color,
+          'weight': 12
+        }));
+
+        var from_latlng = new L.LatLng(from_station.latlng[0], from_station.latlng[1]);
+        var to_latlng = new L.LatLng(to_station.latlng[0], to_station.latlng[1]);
+        var distance = from_latlng.distanceTo(to_latlng);
+
+        var infotext = line.date + ": " + line.from + "-" + line.to + " ("+distance+"m)";
+        info.text(infotext, color);
+
+        map.removeLayer(station_group);
+        map.addLayer(station_group);
+      }, 500 * line_id);
+    });
+
+    $.each(subte['stations'], function(station_id, station) {
+      var station_marker = new L.CircleMarker(station.latlng, {
+        'radius': 6,
+        'fillColor': "#ffffff",
+        'fillOpacity': 1.0,
+        'color': '#000000'
+      });
+      station_group.addLayer(station_marker);
+      station_marker.bindPopup(station.name);
+    });
+	</script>
+</body>
+</html>
